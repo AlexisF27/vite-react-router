@@ -11,7 +11,7 @@ import Missing from './Missing'
 import Nav from './Nav'
 import NewPost from './NewPost'
 import PostPage from './PostPage'
-import {format} from 'date-fns'
+import { format } from 'date-fns'
 
 function App() {
     const [search, setSearch] = useState('')
@@ -48,6 +48,15 @@ function App() {
         setPosts(postToDelete)
         history.push('/')
     }
+
+    useEffect(() => {
+        const filteredResults = posts.filter(post =>
+            ((post.body).toLowerCase()).includes(search.toLowerCase())
+            || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+            setSearchResults(filteredResults.reverse());
+    }, [posts, search])
+
     const handleSubmit = (event) => {
         // eslint-disable-next-line no-unused-vars
         event.preventDefault()
@@ -67,7 +76,7 @@ function App() {
             <Nav search={search} setSearch={setSearch} />
             <Switch>
                 <Route exact path="/">
-                    <Home posts={posts} setPosts={setPosts} />
+                    <Home posts={searchResults} setPosts={setPosts} />
                 </Route>
                 <Route path="/about" component={About} />
                 <Route path="/missing" component={Missing} />
