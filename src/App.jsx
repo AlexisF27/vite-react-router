@@ -4,6 +4,7 @@ import { Route, Switch, useHistory } from 'react-router'
 import { useEffect, useState } from 'react'
 
 import About from './About'
+import EditPost from './EditPost'
 import Footer from './Footer'
 import Header from './Header'
 import Home from './Home'
@@ -20,49 +21,71 @@ function App() {
     const [searchResults, setSearchResults] = useState('')
     const [postTitle, setPostTitle] = useState('')
     const [postBody, setPostBody] = useState('')
+    const [editTitle, setEditTitle] = useState('')
+    const [editBody, setEditBody] = useState('')
     const [posts, setPosts] = useState([])
-
     const history = useHistory()
 
-    useEffect(()=> {
+    useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const response = await api.get('/posts')
                 setPosts(response.data);
             } catch (err) {
-                if(err.response) {
-
+                if (err.response) {
                     console.log(err.response.data);
                     console.log(err.response.staus);
                     console.log(err.response.headers);
-                }else{
+                } else {
                     console.log(`Error: ${err.message}`)
                 }
             }
         }
         fetchPosts()
-    },[]) 
-
-    const handleDelete = async (id) => {
-        // eslint-disable-next-line no-unused-vars
-        try {
-            const response = await api.delete(`/posts/${id}`)
-            const postToDelete = posts.filter((post) => post.id !== id)
-            setPosts(postToDelete)
-            history.push('/')
-        } catch (error) {
-            console.log(`Error:${error.message}`)
-        }
-
-    }
+    }, [])
 
     useEffect(() => {
         const filteredResults = posts.filter(post =>
             ((post.body).toLowerCase()).includes(search.toLowerCase())
             || ((post.title).toLowerCase()).includes(search.toLowerCase()));
-
-            setSearchResults(filteredResults.reverse());
+        setSearchResults(filteredResults.reverse());
     }, [posts, search])
+
+    const handleEdit = async (id) => {
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp')
+        const updatedPost = { id, title: editTitle, datetime, body: editBody }
+  
+
+        try {
+            const response = await api.put(`/posts/${id}`, updatedPost);
+            console.log(response)
+            setPosts(posts.map(post => post.id === id ? { ...response.data } : post))
+            setEditBody('')
+            setEditTitle('')
+            history.push('/')
+
+        } catch (error) {
+            console.log(`Error:${error.message}`)
+            // eslint-disable-next-line no-debugger
+            debugger;
+
+        }
+
+    }
+
+    const handleDelete = async (id) => {
+        try {
+            await api.delete(`/posts/${id}`)
+            const postToDelete = posts.filter((post) => post.id !== id)
+            setPosts(postToDelete)
+            history.push('/')
+        } catch (error) {
+            console.log(`Error:${error.message}`)
+            // eslint-disable-next-line no-debugger
+            debugger;
+
+        }
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -76,7 +99,6 @@ function App() {
             setPostTitle('')
             setPostBody('')
             history.push('/')
-            
         } catch (error) {
             console.log(`Error:${error.message}`)
         }
@@ -88,7 +110,7 @@ function App() {
             <Nav search={search} setSearch={setSearch} />
             <Switch>
                 <Route exact path="/">
-                    <Home posts={searchResults} setPosts={setPosts} />
+                    <Home posts={[...searchResults]} setPosts={setPosts} />
                 </Route>
                 <Route path="/about" component={About} />
                 <Route path="/missing" component={Missing} />
@@ -101,8 +123,18 @@ function App() {
                         handleSubmit={handleSubmit}
                     />
                 </Route>
+                <Route exact path="/edit/:id">
+                    <EditPost
+                        posts={posts}
+                        editBody={editBody}
+                        editTitle={editTitle}
+                        setEditBody={setEditBody}
+                        setEditTitle={setEditTitle}
+                        handleEdit={handleEdit}
+                    />
+                </Route>
                 <Route path="/post/:id">
-                    <PostPage posts={posts} handleDelete={handleDelete} />
+                    <PostPage posts={posts} handleDelete={handleDelete} handleEdit={handleEdit} />
                 </Route>
             </Switch>
             <Footer />
