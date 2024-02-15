@@ -43,11 +43,17 @@ function App() {
         fetchPosts()
     },[]) 
 
-    const handleDelete = (postId) => {
+    const handleDelete = async (id) => {
         // eslint-disable-next-line no-unused-vars
-        const postToDelete = posts.filter((post) => post.id !== postId)
-        setPosts(postToDelete)
-        history.push('/')
+        try {
+            const response = await api.delete(`/posts/${id}`)
+            const postToDelete = posts.filter((post) => post.id !== id)
+            setPosts(postToDelete)
+            history.push('/')
+        } catch (error) {
+            console.log(`Error:${error.message}`)
+        }
+
     }
 
     useEffect(() => {
@@ -59,7 +65,6 @@ function App() {
     }, [posts, search])
 
     const handleSubmit = async (event) => {
-        // eslint-disable-next-line no-unused-vars
         event.preventDefault()
         const id = posts.length ? posts[posts.length - 1].id + 1 : 1
         const datetime = format(new Date(), 'MMMM dd, yyyy pp')
