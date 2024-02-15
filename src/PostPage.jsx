@@ -30,7 +30,7 @@ export const PostPage = ({ posts, handleDelete }) => {
     )
 }
 PostPage.propTypes = {
-    posts: PropTypes.string.isRequired,
+    posts: PropTypes.array,
     handleDelete: PropTypes.func.isRequired,
 }
 

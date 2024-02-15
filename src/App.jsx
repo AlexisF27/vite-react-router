@@ -11,6 +11,7 @@ import Missing from './Missing'
 import Nav from './Nav'
 import NewPost from './NewPost'
 import PostPage from './PostPage'
+import api from './api/posts'
 import { format } from 'date-fns'
 
 function App() {
@@ -19,28 +20,28 @@ function App() {
     const [searchResults, setSearchResults] = useState('')
     const [postTitle, setPostTitle] = useState('')
     const [postBody, setPostBody] = useState('')
-    const [posts, setPosts] = useState([
-        {
-            id: 1,
-            title: 'Item 1',
-            datetime: '2024-02-13T12:30:00.000Z',
-            body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        },
-        {
-            id: 2,
-            title: 'Item 2',
-            datetime: '2024-02-14T08:45:00.000Z',
-            body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        },
-        {
-            id: 3,
-            title: 'Item 3',
-            datetime: '2024-02-15T17:00:00.000Z',
-            body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        },
-    ])
+    const [posts, setPosts] = useState([])
 
     const history = useHistory()
+
+    useEffect(()=> {
+        const fetchPosts = async () => {
+            try {
+                const response = await api.get('/posts')
+                setPosts(response.data);
+            } catch (err) {
+                if(err.response) {
+
+                    console.log(err.response.data);
+                    console.log(err.response.staus);
+                    console.log(err.response.headers);
+                }else{
+                    console.log(`Error: ${err.message}`)
+                }
+            }
+        }
+        fetchPosts()
+    },[]) 
 
     const handleDelete = (postId) => {
         // eslint-disable-next-line no-unused-vars
@@ -57,17 +58,23 @@ function App() {
             setSearchResults(filteredResults.reverse());
     }, [posts, search])
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         // eslint-disable-next-line no-unused-vars
         event.preventDefault()
         const id = posts.length ? posts[posts.length - 1].id + 1 : 1
         const datetime = format(new Date(), 'MMMM dd, yyyy pp')
         const newPost = { id, title: postTitle, datetime, body: postBody }
-        const allPosts = [...posts, newPost]
-        setPosts(allPosts)
-        setPostTitle('')
-        setPostBody('')
-        history.push('/')
+        try {
+            const response = await api.post('/posts', newPost);
+            const allPosts = [...posts, response.data]
+            setPosts(allPosts)
+            setPostTitle('')
+            setPostBody('')
+            history.push('/')
+            
+        } catch (error) {
+            console.log(`Error:${error.message}`)
+        }
     }
 
     return (
