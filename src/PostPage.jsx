@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import PropTypes from 'prop-types'
 
-export const PostPage = ({ posts, handleDelete,handleEdit }) => {
+export const PostPage = ({ posts, handleDelete,handleId }) => {
     //NOTE:
     //A esta pagina se le va a dar el chance de borrar por eso el handledelete
     //id es a lo que lo llamamos al route '/id' si a eso lle llamos diferentes en la ruta hay que cambiar esto
@@ -17,7 +17,7 @@ export const PostPage = ({ posts, handleDelete,handleEdit }) => {
                         <p className="postDate">{post.datetime}</p>
                         <p className="body">{post.body}</p>
                         <Link to={`/edit/${post.id}`}>
-                            <button  className="editButton" onClick={() => handleEdit(post.id)}>Edit Post</button>
+                            <button  className="editButton" onClick={() => handleId(post.id)}>Edit Post</button>
                         </Link>
                         <button className="deleteButton" onClick={() => handleDelete(post.id)}>Delete Post</button>
                     </>
@@ -35,7 +35,7 @@ export const PostPage = ({ posts, handleDelete,handleEdit }) => {
 PostPage.propTypes = {
     posts: PropTypes.array,
     handleDelete: PropTypes.func.isRequired,
-    handleEdit: PropTypes.func.isRequired,
+    handleId: PropTypes.func.isRequired,
 }
 
 export default PostPage

@@ -24,6 +24,8 @@ function App() {
     const [editTitle, setEditTitle] = useState('')
     const [editBody, setEditBody] = useState('')
     const [posts, setPosts] = useState([])
+    // eslint-disable-next-line no-unused-vars
+    const [findPost, setFindPost] = useState([]);
     const history = useHistory()
 
     useEffect(() => {
@@ -51,26 +53,22 @@ function App() {
         setSearchResults(filteredResults.reverse());
     }, [posts, search])
 
+    const handleId = (id) => {
+        setFindPost(posts.find((post) => post.id.toString() === id))
+    }
+
     const handleEdit = async (id) => {
         const datetime = format(new Date(), 'MMMM dd, yyyy pp')
-        const post = posts.find((post) => post.id.toString() === id)
-
-        const updatedPost = { id, title: post.title , datetime, body: post.body }
-        console.log(updatedPost);
+        const editedPost = { id, title: editTitle, datetime, body: editBody }
         try {
-            const response = await api.put(`/posts/${id}`, updatedPost);
-            console.log(response);
+            const response = await api.put(`/posts/${id}`, editedPost);
             setPosts(posts.map(post => post.id === id ? { ...response.data } : post))
             setEditBody('')
             setEditTitle('')
             history.push('/')
-
         } catch (error) {
             console.log(`Error:${error.message}`)
-            // eslint-disable-next-line no-debugger
-
         }
-
     }
 
     const handleDelete = async (id) => {
@@ -123,7 +121,7 @@ function App() {
                         handleSubmit={handleSubmit}
                     />
                 </Route>
-                <Route exact path="/edit/:id">
+                <Route path="/edit/:id">
                     <EditPost
                         posts={posts}
                         editBody={editBody}
@@ -133,8 +131,8 @@ function App() {
                         handleEdit={handleEdit}
                     />
                 </Route>
-                <Route path="/post/:id">
-                    <PostPage posts={posts} handleDelete={handleDelete} handleEdit={handleEdit} />
+                <Route exact path="/post/:id">
+                    <PostPage posts={posts} handleDelete={handleDelete} handleId={handleId} />
                 </Route>
             </Switch>
             <Footer />
