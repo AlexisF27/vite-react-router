@@ -51,30 +51,23 @@ function App() {
         setSearchResults(filteredResults.reverse());
     }, [posts, search])
 
-    // useEffect(() => {
-    //     console.log("Effect triggered");
-    //     const datetime = format(new Date(), 'MMMM dd, yyyy pp')
-    //     const updatedPost = { title: editTitle, datetime, body: editBody };
-    //   }, [editTitle, editBody]);
-
     const handleEdit = async (id) => {
         const datetime = format(new Date(), 'MMMM dd, yyyy pp')
-        console.log(editTitle)
-        console.log(editBody)   
-        const updatedPost = { id, title: editTitle, datetime, body: editBody }
-        console.log(updatedPost)
+        const post = posts.find((post) => post.id.toString() === id)
+
+        const updatedPost = { id, title: post.title , datetime, body: post.body }
+        console.log(updatedPost);
         try {
             const response = await api.put(`/posts/${id}`, updatedPost);
-            const {title, body} = response.data;
+            console.log(response);
             setPosts(posts.map(post => post.id === id ? { ...response.data } : post))
-            setEditBody(title)
-            setEditTitle(body)
+            setEditBody('')
+            setEditTitle('')
             history.push('/')
 
         } catch (error) {
             console.log(`Error:${error.message}`)
             // eslint-disable-next-line no-debugger
-            debugger;
 
         }
 
@@ -98,7 +91,7 @@ function App() {
         // eslint-disable-next-line no-unused-vars
         const id = posts.length ? posts[posts.length - 1].id + 1 : 1
         const datetime = format(new Date(), 'MMMM dd, yyyy pp')
-        const newPost = {  title: postTitle, datetime, body: postBody }
+        const newPost = { title: postTitle, datetime, body: postBody }
         try {
             const response = await api.post('/posts', newPost);
             const allPosts = [...posts, response.data]
