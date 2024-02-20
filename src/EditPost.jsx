@@ -3,18 +3,17 @@ import { Link, useParams } from "react-router-dom"
 import PropTypes from 'prop-types'
 import { useEffect } from "react"
 
-const EditPost = ({ posts, handleEdit, editBody, editTitle ='default', setEditBody, setEditTitle }) => {
+const EditPost = ({ posts, handleEdit, editBody, editTitle, setEditBody, setEditTitle }) => {
   const { id } = useParams();
   const post = posts.find(post => (post.id).toString() === id);
   useEffect(() => {
     if (post) {
-      setEditBody(post.title);
+      setEditTitle(post.title);
       setEditBody(post.body);
     }
-
   }, [post, setEditTitle, setEditBody])
-  return (
 
+  return (
     <main>
       <h2>Edit Post</h2>
       {post && <>
