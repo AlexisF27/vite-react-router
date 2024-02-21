@@ -14,6 +14,7 @@ import NewPost from './NewPost'
 import PostPage from './PostPage'
 import api from './api/posts'
 import { format } from 'date-fns'
+import useWindowSize from './hooks/useWindowSize'
 
 function App() {
     const [search, setSearch] = useState('')
@@ -27,6 +28,7 @@ function App() {
     // eslint-disable-next-line no-unused-vars
     const [findPost, setFindPost] = useState([]);
     const history = useHistory()
+    const {width} = useWindowSize();
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -104,7 +106,7 @@ function App() {
 
     return (
         <div className="App">
-            <Header title="React JS Blog" />
+            <Header title="React JS Blog" width={width}/>
             <Nav search={search} setSearch={setSearch} />
             <Switch>
                 <Route exact path="/">
