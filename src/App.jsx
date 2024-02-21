@@ -14,6 +14,7 @@ import NewPost from './NewPost'
 import PostPage from './PostPage'
 import api from './api/posts'
 import { format } from 'date-fns'
+import useAxiosFetch from './hooks/useAxiosFetch'
 import useWindowSize from './hooks/useWindowSize'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
     const [findPost, setFindPost] = useState([]);
     const history = useHistory()
     const {width} = useWindowSize();
+    const {data, fetchError, isLoading} = useAxiosFetch('http://localhost:3500/posts');
 
     useEffect(() => {
         const fetchPosts = async () => {
