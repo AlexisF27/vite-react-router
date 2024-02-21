@@ -30,25 +30,12 @@ function App() {
     const [findPost, setFindPost] = useState([]);
     const history = useHistory()
     const {width} = useWindowSize();
+    // eslint-disable-next-line no-unused-vars
     const {data, fetchError, isLoading} = useAxiosFetch('http://localhost:3500/posts');
 
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                const response = await api.get('/posts')
-                setPosts(response.data);
-            } catch (err) {
-                if (err.response) {
-                    console.log(err.response.data);
-                    console.log(err.response.staus);
-                    console.log(err.response.headers);
-                } else {
-                    console.log(`Error: ${err.message}`)
-                }
-            }
-        }
-        fetchPosts()
-    }, [])
+    useEffect(()=>{
+        setPosts(data);
+    },[data])
 
     useEffect(() => {
         const filteredResults = posts.filter(post =>
@@ -112,7 +99,7 @@ function App() {
             <Nav search={search} setSearch={setSearch} />
             <Switch>
                 <Route exact path="/">
-                    <Home posts={[...searchResults]} setPosts={setPosts} />
+                    <Home posts={[...searchResults]} setPosts={setPosts} fetchError={fetchError} isLoading={isLoading}/>
                 </Route>
                 <Route path="/about" component={About} />
                 <Route path="/missing" component={Missing} />
