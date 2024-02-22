@@ -1,8 +1,12 @@
+import { createContext, useEffect, useState } from 'react'
+
 import  DataContext from './context/DataContext'
 import  {useContext} from 'react'
 
 export const NewPost = () => {
-    const { postBody, postTitle, setPostBody, setPostTitle, handleSubmit } = useContext(DataContext)
+    const [postTitle, setPostTitle] = useState('')
+    const [postBody, setPostBody] = useState('')
+    const { handleSubmit } = useContext(DataContext)
     return (
         <form className="newPostForm" onSubmit={handleSubmit}>
             <label htmlFor="postTitle">Title:</label>

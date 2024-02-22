@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useState } from 'react'
 
 import PropTypes from 'prop-types'
 import api from '../api/posts'
@@ -12,8 +12,7 @@ const DataContext = createContext({});
 export const DataProvider = ({ children }) => {
   const [search, setSearch] = useState('')
   const [searchResults, setSearchResults] = useState('')
-  const [postTitle, setPostTitle] = useState('')
-  const [postBody, setPostBody] = useState('')
+
   const [editTitle, setEditTitle] = useState('')
   const [editBody, setEditBody] = useState('')
   const [posts, setPosts] = useState([])
