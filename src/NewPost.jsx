@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types'
+import  DataContext from './context/DataContext'
+import  {useContext} from 'react'
 
-export const NewPost = ({ postBody, postTitle, setPostBody, setPostTitle, handleSubmit }) => {
+export const NewPost = () => {
+    const { postBody, postTitle, setPostBody, setPostTitle, handleSubmit } = useContext(DataContext)
     return (
         <form className="newPostForm" onSubmit={handleSubmit}>
             <label htmlFor="postTitle">Title:</label>
@@ -23,12 +25,6 @@ export const NewPost = ({ postBody, postTitle, setPostBody, setPostTitle, handle
         </form>
     )
 }
-NewPost.propTypes = {
-    postBody: PropTypes.string.isRequired,
-    postTitle: PropTypes.string.isRequired,
-    setPostBody: PropTypes.func.isRequired,
-    setPostTitle: PropTypes.func.isRequired,
-    handleSubmit: PropTypes.func.isRequired,
-}
+
 
 export default NewPost

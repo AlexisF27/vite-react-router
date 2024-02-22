@@ -1,8 +1,10 @@
 import { Link, useParams } from 'react-router-dom'
 
-import PropTypes from 'prop-types'
+import  DataContext from './context/DataContext'
+import  {useContext} from 'react'
 
-export const PostPage = ({ posts, handleDelete,handleId }) => {
+export const PostPage = () => {
+    const { posts, handleDelete,handleId } = useContext(DataContext)
     //NOTE:
     //A esta pagina se le va a dar el chance de borrar por eso el handledelete
     //id es a lo que lo llamamos al route '/id' si a eso lle llamos diferentes en la ruta hay que cambiar esto
@@ -31,11 +33,6 @@ export const PostPage = ({ posts, handleDelete,handleId }) => {
             </article>
         </main>
     )
-}
-PostPage.propTypes = {
-    posts: PropTypes.array,
-    handleDelete: PropTypes.func.isRequired,
-    handleId: PropTypes.func.isRequired,
 }
 
 export default PostPage

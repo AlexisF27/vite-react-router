@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 function useWindowSize() {
   const [windowSize, setWindowsize] = useState({
@@ -11,12 +11,14 @@ function useWindowSize() {
       setWindowsize({width : window.innerWidth, height: window.innerHeight})
     }
     handleResize();
-    window.addEventListener('resize', handleResize  )
+    window.addEventListener('resize', handleResize)
 
     return () => {window.removeEventListener("resize", handleResize)};
+    
 
   },[])
-  return windowSize
+
+  return useMemo(() => windowSize, [windowSize]);
 
 }
 
